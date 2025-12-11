@@ -19,6 +19,14 @@ public class ContratoService {
 
     private final ContratoRepository contratoRepository;
 
+    /**
+     * Cria um novo contrato de limite para uma conta.
+     * O saldo devedor é inicializado com zero.
+     *
+     * @param request O DTO contendo o accountId e o valor do limite a ser contratado.
+     * @return O DTO de resposta com os dados do contrato criado.
+     * @throws IllegalArgumentException se um contrato já existir para o accountId informado.
+     */
     public ContratoResponseDTO criarContrato(ContratoRequestDTO request) {
         Optional<Contrato> existingContrato = contratoRepository.findByAccountId(request.getAccountId());
         if (existingContrato.isPresent()) {
@@ -35,11 +43,27 @@ public class ContratoService {
         return toResponseDTO(savedContrato);
     }
 
+    /**
+     * Consulta os dados de um contrato de limite a partir do accountId.
+     *
+     * @param accountId O identificador da conta.
+     * @return O DTO de resposta com os dados do contrato, incluindo o limite disponível.
+     * @throws ResourceNotFoundException se nenhum contrato for encontrado para o accountId informado.
+     */
     public ContratoResponseDTO consultarContrato(String accountId) {
         Contrato contrato = findContratoByAccountId(accountId);
         return toResponseDTO(contrato);
     }
 
+    /**
+     * Altera o valor do limite total de um contrato existente.
+     *
+     * @param accountId O identificador da conta.
+     * @param novoValorLimite O novo valor total do limite.
+     * @return O DTO de resposta com os dados do contrato atualizado.
+     * @throws ResourceNotFoundException se nenhum contrato for encontrado para o accountId informado.
+     * @throws IllegalStateException se o novo valor do limite for inferior ao saldo devedor atual.
+     */
     public ContratoResponseDTO alterarLimite(String accountId, BigDecimal novoValorLimite) {
         Contrato contrato = findContratoByAccountId(accountId);
 
@@ -53,6 +77,14 @@ public class ContratoService {
         return toResponseDTO(savedContrato);
     }
 
+    /**
+     * Cancela (remove) um contrato de limite.
+     * O cancelamento só é permitido se o saldo devedor for zero.
+     *
+     * @param accountId O identificador da conta.
+     * @throws ResourceNotFoundException se nenhum contrato for encontrado para o accountId informado.
+     * @throws IllegalStateException se o contrato possuir saldo devedor maior que zero.
+     */
     public void cancelarContrato(String accountId) {
         Contrato contrato = findContratoByAccountId(accountId);
         if (contrato.getSaldoDevedor().compareTo(BigDecimal.ZERO) > 0) {
@@ -61,6 +93,16 @@ public class ContratoService {
         contratoRepository.delete(contrato);
     }
 
+    /**
+     * Registra um débito em um contrato, aumentando o saldo devedor.
+     * A operação é negada se o débito ultrapassar o limite disponível.
+     *
+     * @param accountId O identificador da conta.
+     * @param valor O valor a ser debitado.
+     * @return O DTO de resposta com os dados do contrato atualizado.
+     * @throws ResourceNotFoundException se nenhum contrato for encontrado para o accountId informado.
+     * @throws IllegalStateException se o valor do débito for maior que o limite disponível.
+     */
     public ContratoResponseDTO registrarDebito(String accountId, BigDecimal valor) {
         Contrato contrato = findContratoByAccountId(accountId);
         BigDecimal limiteDisponivel = contrato.getValorLimite().subtract(contrato.getSaldoDevedor());
@@ -74,6 +116,15 @@ public class ContratoService {
         return toResponseDTO(savedContrato);
     }
 
+    /**
+     * Registra um crédito em um contrato, reduzindo o saldo devedor.
+     * O saldo devedor nunca se tornará negativo; o valor mínimo é zero.
+     *
+     * @param accountId O identificador da conta.
+     * @param valor O valor a ser creditado.
+     * @return O DTO de resposta com os dados do contrato atualizado.
+     * @throws ResourceNotFoundException se nenhum contrato for encontrado para o accountId informado.
+     */
     public ContratoResponseDTO registrarCredito(String accountId, BigDecimal valor) {
         Contrato contrato = findContratoByAccountId(accountId);
         BigDecimal novoSaldoDevedor = contrato.getSaldoDevedor().subtract(valor);
