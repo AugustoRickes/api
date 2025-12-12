@@ -1,0 +1,34 @@
+meta {
+  name: registra debito
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_URL}}/contratos/1234-5/debito
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+  "valor": 200.00  
+  }
+  
+}
+
+docs {
+  Este endpoint permite registrar um débito no contrato de limite de uma conta.
+  
+  - **Método:** POST
+  - **URL:** /api/v1/contratos/{accountId}/debito
+  - **Parâmetros de Path:**
+    - `accountId`: (String) Identificador único da conta.
+  - **Corpo da Requisição (JSON):**
+    - `valor`: (BigDecimal) O valor a ser debitado.
+  - **Resposta (200 OK):**
+    Retorna os detalhes do contrato atualizado após o débito.
+  - **Exceções:**
+    - `404 Not Found`: Se nenhum contrato for encontrado para o `accountId`.
+    - `422 Unprocessable Entity`: Se o débito for maior que o `limiteDisponivel`.
+}

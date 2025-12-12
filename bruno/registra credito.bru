@@ -1,0 +1,32 @@
+meta {
+  name: registra credito
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/contratos/1234-5/credito
+  body: json
+}
+
+body:json {
+  {
+  "valor": 100.00  
+  }
+  
+}
+
+docs {
+  Este endpoint permite registrar um crédito no contrato de limite de uma conta.
+  
+  - **Método:** POST
+  - **URL:** /api/v1/contratos/{accountId}/credito
+  - **Parâmetros de Path:**
+    - `accountId`: (String) Identificador único da conta.
+  - **Corpo da Requisição (JSON):**
+    - `valor`: (BigDecimal) O valor a ser creditado.
+  - **Resposta (200 OK):**
+    Retorna os detalhes do contrato atualizado após o crédito.
+  - **Exceções:**
+    - `404 Not Found`: Se nenhum contrato for encontrado para o `accountId`.
+}

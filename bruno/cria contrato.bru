@@ -1,0 +1,35 @@
+meta {
+  name: cria contrato
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_URL}}/contratos
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  "accountId": "1234-5", 
+  "valorLimite": 1000.00
+  }
+}
+
+docs {
+  Este endpoint permite criar um novo contrato de limite para uma conta.
+  
+  - **Método:** POST
+  - **URL:** /api/v1/contratos
+  - **Corpo da Requisição (JSON):**
+    - `accountId`: (String) Identificador único da conta.
+    - `valorLimite`: (BigDecimal) Valor total do limite contratado.
+  - **Resposta (201 Created):**
+    Retorna os detalhes do contrato criado, incluindo `id`, `accountId`, `valorLimite`, `saldoDevedor` (inicialmente 0) e `limiteDisponivel`.
+  - **Exceções:**
+    - `400 Bad Request`: Se o `accountId` já existir.
+    - `400 Bad Request`: Se o JSON for inválido ou campos obrigatórios estiverem ausentes.
+}

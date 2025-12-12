@@ -1,0 +1,34 @@
+meta {
+  name: altera limite
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:8080/api/v1/contratos/1234-5/limite
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+  "valor": 1200.00  
+  }
+  
+}
+
+docs {
+  Este endpoint permite alterar o valor total do limite de um contrato existente.
+  
+  - **Método:** PUT
+  - **URL:** /api/v1/contratos/{accountId}/limite
+  - **Parâmetros de Path:**
+    - `accountId`: (String) Identificador único da conta.
+  - **Corpo da Requisição (JSON):**
+    - `valor`: (BigDecimal) O novo valor total do limite.
+  - **Resposta (200 OK):**
+    Retorna os detalhes do contrato atualizado.
+  - **Exceções:**
+    - `404 Not Found`: Se nenhum contrato for encontrado para o `accountId`.
+    - `422 Unprocessable Entity`: Se o novo `valorLimite` for inferior ao `saldoDevedor` atual.
+}

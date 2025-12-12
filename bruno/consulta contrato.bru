@@ -1,0 +1,22 @@
+meta {
+  name: consulta contrato
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_URL}}/contratos/1234-5
+}
+
+docs {
+  Este endpoint permite consultar os detalhes de um contrato de limite específico.
+  
+  - **Método:** GET
+  - **URL:** /api/v1/contratos/{accountId}
+  - **Parâmetros de Path:**
+    - `accountId`: (String) Identificador único da conta.
+  - **Resposta (200 OK):**
+    Retorna os detalhes do contrato, incluindo `accountId`, `valorLimite`, `saldoDevedor` e o `limiteDisponivel` calculado.
+  - **Exceções:**
+    - `404 Not Found`: Se nenhum contrato for encontrado para o `accountId` fornecido.
+}
