@@ -32,6 +32,30 @@ Após o banco de dados estar em execução, você pode iniciar a aplicação Spr
 
 A aplicação será iniciada na porta `8080` por padrão.
 
+### 3. Executar os Testes e Gerar Relatório de Cobertura
+
+Para executar os testes unitários do projeto, utilize o seguinte comando:
+
+```bash
+./mvnw test
+```
+
+Para gerar o relatório de cobertura de código com JaCoCo, execute:
+
+```bash
+./mvnw clean test
+```
+
+Após a execução, o relatório de cobertura será gerado em formato HTML no diretório:
+
+```
+target/site/jacoco/index.html
+```
+
+Abra este arquivo em um navegador para visualizar a cobertura de código detalhada por pacote, classe e método.
+
+**Nota:** O projeto está configurado com uma meta mínima de cobertura de 80% por pacote. Caso a cobertura fique abaixo desse valor, o build falhará na verificação do JaCoCo.
+
 ## Endpoints da API
 
 A API oferece os seguintes endpoints para a gestão de contratos de limite:
