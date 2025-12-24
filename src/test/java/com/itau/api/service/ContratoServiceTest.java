@@ -155,7 +155,7 @@ class ContratoServiceTest {
         ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
             contratoService.consultarContrato(NON_EXISTENT_ACCOUNT_ID);
         });
-        assertThat(thrown.getMessage()).isEqualTo("Contrato não encontrado para o accountId: NON_EXISTENT_ACCOUNT_ID");
+        assertThat(thrown.getMessage()).isEqualTo("Contrato não encontrado para o accountId: " + NON_EXISTENT_ACCOUNT_ID);
     }
     
     @Test
