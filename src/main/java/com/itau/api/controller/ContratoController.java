@@ -20,6 +20,7 @@ import com.itau.api.dto.ContratoResponseDTO;
 import com.itau.api.dto.MovimentacaoRequestDTO;
 import com.itau.api.service.ContratoService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -35,7 +36,7 @@ public class ContratoController {
      * @return ResponseEntity com status 201 (Created) e os dados do contrato criado.
      */
     @PostMapping
-    public ResponseEntity<ContratoResponseDTO> criarContrato(@RequestBody ContratoRequestDTO request) {
+    public ResponseEntity<ContratoResponseDTO> criarContrato(@Valid @RequestBody ContratoRequestDTO request) {
         ContratoResponseDTO response = contratoService.criarContrato(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
