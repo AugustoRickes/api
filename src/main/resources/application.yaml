@@ -14,6 +14,11 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resorceserver:
+        jwt:
+          issuer-url: http://localhost:8081
 server:
   port: 8080
   error:
