@@ -16,9 +16,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   security:
     oauth2:
-      resorceserver:
+      resourceserver:
         jwt:
-          issuer-url: http://localhost:8081
+          issuer-uri: http://localhost:8081
 server:
   port: 8080
   error:
