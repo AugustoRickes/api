@@ -6,16 +6,22 @@ meta {
 
 post {
   url: {{base_URL}}/contratos
+  body: json
+  auth: bearer
 }
 
 headers {
   Content-Type: application/json
 }
 
+auth:bearer {
+  token: {{bearer_token}}
+}
+
 body:json {
   {
-  "accountId": "1234-5", 
-  "valorLimite": 1000.00
+  "accountId": "1234567", 
+  "valorLimite": 1000
   }
 }
 
@@ -24,12 +30,14 @@ docs {
   
   - **Método:** POST
   - **URL:** /api/v1/contratos
+  - **Autenticação:** Requer um token JWT Bearer válido. Execute a requisição "pegar token" para obter um.
   - **Corpo da Requisição (JSON):**
     - `accountId`: (String) Identificador único da conta.
     - `valorLimite`: (BigDecimal) Valor total do limite contratado.
-  - **Resposta (201 Created):**
+  - **Resposta (201CREATED):**
     Retorna os detalhes do contrato criado, incluindo `id`, `accountId`, `valorLimite`, `saldoDevedor` (inicialmente 0) e `limiteDisponivel`.
   - **Exceções:**
+    - `401 Unauthorized`: Se o token for inválido, expirado ou não fornecido.
     - `400 Bad Request`: Se o `accountId` já existir.
     - `400 Bad Request`: Se o JSON for inválido ou campos obrigatórios estiverem ausentes.
 }
