@@ -5,9 +5,13 @@ meta {
 }
 
 delete {
-  url: {{base_URL}}/api/v1/contratos/1234-5
+  url: {{base_URL}}/contratos/1234567
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
 }
 
 docs {
@@ -15,11 +19,13 @@ docs {
   
   - **Método:** DELETE
   - **URL:** /api/v1/contratos/{accountId}
+  - **Autenticação:** Requer um token JWT Bearer válido. Execute a requisição "pegar token" para obter um.
   - **Parâmetros de Path:**
     - `accountId`: (String) Identificador único da conta.
   - **Resposta (204 No Content):**
     Retorna um status de sucesso sem conteúdo se o cancelamento for bem-sucedido.
   - **Exceções:**
+    - `401 Unauthorized`: Se o token for inválido, expirado ou não fornecido.
     - `404 Not Found`: Se nenhum contrato for encontrado para o `accountId`.
     - `422 Unprocessable Entity`: Se o contrato possuir `saldoDevedor` maior que zero.
 }

@@ -5,13 +5,18 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/contratos/1234-5/credito
+  url: {{base_URL}}/contratos/1234567/credito
   body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
 }
 
 body:json {
   {
-  "valor": 100.00  
+  "valor": 500.00  
   }
   
 }
@@ -21,6 +26,7 @@ docs {
   
   - **Método:** POST
   - **URL:** /api/v1/contratos/{accountId}/credito
+  - **Autenticação:** Requer um token JWT Bearer válido. Execute a requisição "pegar token" para obter um.
   - **Parâmetros de Path:**
     - `accountId`: (String) Identificador único da conta.
   - **Corpo da Requisição (JSON):**
@@ -28,5 +34,6 @@ docs {
   - **Resposta (200 OK):**
     Retorna os detalhes do contrato atualizado após o crédito.
   - **Exceções:**
+    - `401 Unauthorized`: Se o token for inválido, expirado ou não fornecido.
     - `404 Not Found`: Se nenhum contrato for encontrado para o `accountId`.
 }
