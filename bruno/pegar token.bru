@@ -13,7 +13,7 @@ post {
 body:form-urlencoded {
   grant_type: client_credentials
   client_id: api-contratos
-  client_secret: {{token}}
+  client_secret: {{client_secret}}
 }
 
 tests {
@@ -28,4 +28,17 @@ tests {
 settings {
   encodeUrl: true
   timeout: 0
+}
+
+docs {
+  Esta requisição obtém um token de acesso (JWT) do Keycloak usando o fluxo **Client Credentials**.
+  
+  - **Variáveis de Ambiente:**
+    - `{{base_URL_keycloak}}`: aponta para a URL base do Keycloak (ex: `http://localhost:8081`).
+    - `{{client_secret}}`: Esta variável deve conter o "Client Secret" do client `api-contratos` que você copiou do console la no painel do Keycloak.
+  
+  - **Script de Teste (Pós-Requisição):**
+    - Após receber uma resposta 200 OK, o script na aba "Tests" extrai o `access_token` do corpo da resposta.
+    - Ele então salva este token em uma variável de ambiente chamada `bearer_token`.
+    - As outras requisições da collection (consultar, criar, etc.) usam `{{bearer_token}}` para se autenticarem na API.
 }
