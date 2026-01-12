@@ -1,27 +1,14 @@
 package com.itau.api.controller;
 
-import java.math.BigDecimal;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.itau.api.dto.AlterarLimiteRequestDTO;
-import com.itau.api.dto.ContratoRequestDTO;
-import com.itau.api.dto.ContratoResponseDTO;
-import com.itau.api.dto.MovimentacaoRequestDTO;
+import com.itau.api.dto.*;
+import com.itau.api.kafka.event.MovimentacaoEvent;
+import com.itau.api.kafka.producer.MovimentacaoProducer;
 import com.itau.api.service.ContratoService;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/contratos")
@@ -29,6 +16,7 @@ import lombok.AllArgsConstructor;
 public class ContratoController {
 
     private final ContratoService contratoService;
+    private final MovimentacaoProducer movimentacaoProducer;
 
     /**
      * Endpoint para criar um novo contrato de limite.
@@ -77,30 +65,37 @@ public class ContratoController {
     }
 
     /**
-     * Endpoint para registrar um débito no contrato.
+     * Aceita uma solicitação de débito e a envia para processamento assíncrono.
      * @param accountId O ID da conta.
      * @param request Corpo da requisição com o valor a ser debitado.
-     * @return ResponseEntity com status 200 (OK) e os dados do contrato atualizado.
+     * @return ResponseEntity com status 202 (Accepted).
      */
     @PostMapping("/{accountId}/debito")
-    public ResponseEntity<ContratoResponseDTO> registrarDebito(
+    public ResponseEntity<Void> registrarDebito(
             @PathVariable String accountId,
             @RequestBody MovimentacaoRequestDTO request) {
-        ContratoResponseDTO response = contratoService.registrarDebito(accountId, request.getValor());
-        return ResponseEntity.ok(response);
+
+        MovimentacaoEvent event = new MovimentacaoEvent(accountId, request.getValor(), TipoMovimentacao.DEBITO);
+        movimentacaoProducer.enviar(event);
+
+        return ResponseEntity.accepted().build();
     }
 
     /**
-     * Endpoint para registrar um crédito no contrato.
+     * Aceita uma solicitação de crédito e a envia para processamento assíncrono.
      * @param accountId O ID da conta.
      * @param request Corpo da requisição com o valor a ser creditado.
-     * @return ResponseEntity com status 200 (OK) e os dados do contrato atualizado.
+     * @return ResponseEntity com status 202 (Accepted).
      */
     @PostMapping("/{accountId}/credito")
-    public ResponseEntity<ContratoResponseDTO> registrarCredito(
+    public ResponseEntity<Void> registrarCredito(
             @PathVariable String accountId,
             @RequestBody MovimentacaoRequestDTO request) {
-        ContratoResponseDTO response = contratoService.registrarCredito(accountId, request.getValor());
-        return ResponseEntity.ok(response);
+        
+        MovimentacaoEvent event = new MovimentacaoEvent(accountId, request.getValor(), TipoMovimentacao.CREDITO);
+        movimentacaoProducer.enviar(event);
+
+        return ResponseEntity.accepted().build();
     }
 }
+
